@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        main {
+            max-width: 400px;
+            width: 100%;
+            background-color: #fff;
+            padding: 30px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        fieldset {
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        legend {
+            color: #3498db;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #3498db;
+            color: #fff;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .forgot-password {
+            color: #666;
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .forgot-password:hover {
+            color: #444;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <form class="expense-form" id="loginForm" onsubmit="handleLoginFormSubmission(event)">
+            <fieldset>
+                <legend>Login</legend>
+                <div class="sigin">
+                    <label for="Username">Username</label>
+                    <input type="text" name="Username" id="Username" required />
+
+                    <label for="Password">Enter Password</label>
+                    <input type="password" name="Password" id="Password" required />
+                    <button class="btn" type="submit">Sign In</button>
+                </div>
+            </fieldset>
+        </form>
+
+        <div id="msg"></div>
+
+        <div class="forgot-password" onclick="forgotpassword()">Forgot Password?</div>
+
+        <form class="expense-signup" action="/" id="signinForm" method="GET">
+            <label for="sigup">Create an Account =></label>
+            <button class="btn" type="submit" id="sigup">Signup</button>
+        </form>
+    </main>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.4.1/axios.min.js" integrity="sha512-Fh/JL4KFgbH0OFN4EMEOvk90MTCjVuTVGFRDc+Kh5PyUFOzSzn/KA6PTOSNywfm5Ruppr40Uj09oGuj5tn6jiQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <script>
+         window.onload = function() {
+             // Get data from the server or determine it dynamically
+             var pageTitle = "Login Page";  // Replace this with the actual title
+             var path = "Home/signup";  // Replace this with the actual path
+ 
+             // Set the page title
+             document.title = pageTitle;
+
+            } //end of function
+
+            function handleLoginFormSubmission(e) {
+                e.preventDefault(); 
+                console.log(e.target.name);
+                const loginDetails ={
+                    Username: e.target.Username.value,
+                    Password: e.target.Password.value
+                }
+                console.log(loginDetails);
+               axios.post('http://localhost:2000/Home/signin', loginDetails)
+               .then(response => {
+                if(response.status === 200)
+                {
+                    localStorage.setItem('token', response.data.token )
+                    alert(response.data.message)
+                    window.location.href = 'http://localhost:2000/Expense/details';
+                }
+                
+               })
+               .catch(error => {
+                console.log(JSON.stringify(error));
+                console.log("eh");
+                document.getElementById('msg').innerHTML='<div style="color:red;" >' + error.data.message + '</div>';
+                // document.body.innerHTML += '<div style="color:red;">' + error.data.message + '</div>';
+   
+               })
+            };
+            
+            function forgotpassword() {
+                window.location.href = "http://localhost:2000/password/forgetPassword"
+            } //end of function
+
+     </script>
+
+</body> 
+
+</html>
+
+

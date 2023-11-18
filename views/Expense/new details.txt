@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Expense</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        form {
+            max-width: 400px;
+            width: 100%;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        input,
+        textarea,
+        select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
+
+        #listOfExpenses {
+            list-style: none;
+            padding: 0;
+        }
+
+        #listOfExpenses li {
+            background-color: #f1f1f1;
+            border: 1px solid #ddd;
+            margin-bottom: 8px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .delete,
+        .edit {
+            margin-left: 8px;
+        }
+
+        #leaderboard {
+            margin-top: 20px;
+        }
+
+        #msg {
+            margin-top: 20px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    
+</head>
+
+<body>
+    <form class="product-form" id="myExpense">
+        <div class="form-group">
+            <label for="Amount">Enter Expense Amount:</label>
+            <input type="number" class="form-control" id="Amount" name="Amount" required>
+
+            <label for="description">Choose Description:</label>
+            <textarea class="form-control" name="description" id="description" rows="5"></textarea>
+
+            <label for="Category">Choose a Category:</label>
+            <select class="form-control" name="Category" id="Category">
+                <option value="movie">Movie</option>
+                <option value="fuel">Fuel</option>
+                <option value="food">Food</option>
+                <option value="shopping">Shopping</option>
+            </select>
+
+        <button id="fetchExpensesButton" class="btn" type="submit">Add Expense</button>
+        </div>
+        <div class="error-message" id="error-message"></div>
+        <div>
+            <ul id="listOfExpenses"></ul>
+        </div>
+    </form>
+
+    <!-- attaching a payment portal to the application -->
+    <div id="msg"></div>
+    <button id="rzp-button1" class="btn btn-primary">Buy Premium</button>
+    <button onclick="download()" id="downloadexpense">Download File</button>
+
+    <div id="leaderboard"></div>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+    
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.4.1/axios.min.js"
+            integrity="sha512-Fh/JL4KFgbH0OFN4EMEOvk90MTCjVuTVGFRDc+Kh5PyUFOzSzn/KA6PTOSNywfm5Ruppr40Uj09oGuj5tn6jiQ=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+        <script>
+        
+        function parseJwt (token) {
+                    var base64Url = token.split('.')[1];
+                    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+                        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                    }).join(''));
+                    return JSON.parse(jsonPayload);
+                }
+
+                //function to show leaderboard
+                function showLeaderboard() {
+                    const inputElement = document.createElement("input");
+                    inputElement.type = "button";
+                    inputElement.value = "Show Leaderboard";
+                    inputElement.onclick = async () => {
+                    try {
+                        const token = localStorage.getItem('token');
+                        const response = await axios.get('http://localhost:2000/premium/showleaderboard', {
+                        headers: { "Authorization": token }
+                    });
+
+                    const userLeaderBoardArray = response.data;
+
+                    console.log('userLeaderBoardArray:', userLeaderBoardArray);
+
+                    var leaderboardElem = document.getElementById('leaderboard');
+                    leaderboardElem.innerHTML += '<h1>Leader Board </h1>';
+
+                    if (userLeaderBoardArray && Object.keys(userLeaderBoardArray).length > 0) {
+                        if (Array.isArray(userLeaderBoardArray)) {
+                            userLeaderBoardArray.forEach((userDetails) => {
+                                leaderboardElem.innerHTML += `<li>Name- ${userDetails.Username} Total Expense - ${userDetails.totalExpenses} `;
+                            });
+                        } 
+                        else {
+                            leaderboardElem.innerHTML += 'No valid leaderboard data available.';
+                         }
+                    } 
+                    else {
+                        leaderboardElem.innerHTML += 'No valid leaderboard data available.';
+                    }
+                    } 
+                    catch (error) {
+                        console.error('Error fetching leaderboard data:', error);
+                    }
+                };
+
+                document.getElementById("msg").appendChild(inputElement);
+            }
+
+            function download(){
+                const token = localStorage.getItem('token');
+                axios.get('http://localhost:2000/download', { headers: {"Authorization" : token} })
+                .then((response) => {
+                if(response.status === 200){
+                    //the bcakend is essentially sending a download link
+                    //  which if we open in browser, the file would download
+                    var a = document.createElement("a");
+                    a.href = response.data.fileURL;
+                    a.download = 'myexpense.csv';
+                    a.click();
+                } else {
+                    throw new Error(response.data.message)
+                }
+
+            })
+            .catch((err) => {
+                showError(err)
+            });
+        }
+
+                
+                function showPremiumuser(){
+                    // const premiumButton = document.getElementById('rzp-button1');
+                    // if (premiumButton) {
+                    //     premiumButton.parentNode.removeChild(premiumButton);
+                    // }
+                    document.getElementById('rzp-button1').style.visibility ="hidden";
+                    document.getElementById('msg').innerHTML="You are a Premium User";
+                    
+                    // document.body.innerHTML += 'You are a Premium Member';
+                }        
+            
+
+                // start of DOMConetend function    
+                document.addEventListener('DOMContentLoaded', () => {
+            
+                
+            
+                const myExpense = document.querySelector('#myExpense');
+                const listOfExpenses = document.getElementById('listOfExpenses');
+                const errorMessageElement = document.getElementById('error-message');
+                const token= localStorage.getItem('token');  
+            
+                const decodeToken= parseJwt(token)
+                const ispremiumuser= decodeToken.ispremiumuser;
+                if(ispremiumuser)
+                {
+                    showPremiumuser();
+                    showLeaderboard()
+                } 
+            
+                
+           
+                // creating a response when the screen is reloaded.
+                var expensesData = <%- expense %>;
+            
+                console.log("------" , expensesData);
+
+                console.log("tokkkkk  ", token);
+                if(expensesData.length>0)
+                {
+                    expensesData.forEach(expense => {
+                
+                    if(expense.ExpenseReportId== decodeToken.ExpenseReportId)
+                    {
+                
+                        const childElement1 = document.createElement('li');
+                        childElement1.textContent = expense.Amount + ' - ' + expense.description + ' - ' + expense.Category;
+                        const deleteButton = document.createElement('button');
+                        deleteButton.className = 'btn btn-danger btn-sm float-right delete';
+                        deleteButton.appendChild(document.createTextNode('Delete Expense'));
+                        const editButton = document.createElement('button');
+                        editButton.className = 'btn btn-primary btn-sm float-right edit';
+                        editButton.appendChild(document.createTextNode('Edit'));
+                        childElement1.appendChild(editButton);
+                        childElement1.appendChild(deleteButton);
+                        listOfExpenses.appendChild(childElement1);
+                    }
+                })
+                } //end of if statement
+
+
+                myExpense.addEventListener('submit', onSubmit);
+            
+                //start of onsubmit function which will be called when the Add button is clicked
+                function onSubmit(event) {
+                    event.preventDefault();
+
+                    const expenseDetails = {
+                        Amount: document.getElementById('Amount').value,
+                        description: document.getElementById('description').value,
+                        Category: document.getElementById('Category').value
+                    };
+                    const token= localStorage.getItem('token'); 
+                    console.log(token);
+                    const config = {
+                        headers: {
+                            'Authorization': `Bearer ${token}`// Include the token in the Authorization header
+                                 }
+                            };
+                    console.log(config);
+
+                    //post call to the server returning 200 success
+                    axios.post('http://localhost:2000/Expense/details', expenseDetails, config)
+                        .then(response => {
+                            if (response.data.success) 
+                            {
+                                console.log(response.data.expense);
+                                showOnScreen(response.data.expense);
+                            } 
+                            else 
+                            {
+                            console.error('Error fetching data: ', response.data.error);
+                            showError(response.data.error);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            showError(error);
+                        });
+                }
+
+
+                // function to show the values as list on the screen
+                function showOnScreen(myobj) {
+                    console.log('Received data from server:', myobj);
+                    const childElement = document.createElement('li');
+                    childElement.textContent = myobj.Amount + ' - ' + myobj.description + ' - ' + myobj.Category;
+                    const deleteButton = document.createElement('button');
+                    deleteButton.className = 'btn btn-danger btn-sm float-right delete';
+                    deleteButton.appendChild(document.createTextNode('Delete Expense'));
+                    const editButton = document.createElement('button');
+                    editButton.className = 'btn btn-primary btn-sm float-right edit';
+                    editButton.appendChild(document.createTextNode('Edit'));
+                    childElement.appendChild(editButton);
+                    childElement.appendChild(deleteButton);
+                    listOfExpenses.appendChild(childElement);
+
+                
+                }
+
+
+
+                // function used to show error on the screen
+                function showError(error)
+                    {
+                    // Assuming there's an element with ID 'error-message' in HTML
+                        const errorMessageElement = document.getElementById('error-message');
+                        try {
+                            const errorMessage = JSON.parse(error.response.data.error);
+                            if (errorMessageElement) 
+                            {
+                            errorMessageElement.textContent = `An error occurred: ${errorMessage.message}`;
+                            } 
+                            else 
+                            {
+                                // If there's no specific element to display the error, log it to the console
+                                console.error('An error occurred:', errorMessage.message);
+                            }
+                        }
+                        catch (parseError) {
+                            // If parsing the error JSON fails, display the original error response text
+                            if (errorMessageElement)
+                            {
+                                errorMessageElement.textContent = `An error occurred: ${error.response.data}`;
+                            }
+                            else 
+                            {
+                                console.error('An error occurred:', error.response.data);
+                            }
+                        }
+                    }
+                
+               
+                
+
+              
+
+                //function for razorpay
+                document.getElementById('rzp-button1').onclick = async function (e) {
+                        const token = localStorage.getItem('token');
+                    
+                        try {
+                            const response = await axios.get('http://localhost:2000/premiummembership', {
+                                headers: { "Authorization": token }
+                            
+                            });
+                        
+                        const options = {
+                            "key": response.data.key_id,
+                            "order_id": response.data.order.id,
+                            "handler": async function (response) {
+                                try {
+                                    const paymentResponse = await axios.post('http://localhost:2000/updatetransactionstatus', {
+                                    order_id: options.order_id,
+                                    payment_id: response.razorpay_payment_id,
+                                }, {
+                                    headers: { "Authorization": token }
+                                });
+                                if (paymentResponse.data.success) 
+                                {
+                                    
+                                    alert('You are a Premium Member');
+
+                                    //to remove the premimum button 
+                                    localStorage.setItem('token', paymentResponse.data.token);
+                                    
+                                    showPremiumuser()
+                                    showLeaderboard()
+                                       // Perform additional actions if payment was successful
+                                }
+                                else {
+                                    console.error('Payment failed:', paymentResponse.data.error);
+                                    // Handle payment failure scenario
+                                }
+                            } // end of try
+
+                            catch (error) {
+                                    console.error('Error updating transaction status:', error);
+                                   // Handle error updating transaction status
+                                }
+                            }
+                        };
+                       
+                        const razorpay = new Razorpay(options);
+                        razorpay.on('payment.success', options.handler);
+                        razorpay.on('payment.error', function (response) {
+                            console.error(response.error.description);
+                        // Handle payment failure here
+                        });
+                     razorpay.open();
+                    }
+                    catch (error) {
+                        console.error('Error fetching RazorPay details:', error);
+                        // Handle error fetching RazorPay details
+                        }
+                    }
+
+                
+
+                
+
+            });//start of DOMConetend function 
+                
+
+
+     </script>
+
+</body> 
+
+</html>
