@@ -26,7 +26,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 const adminRoutes = require('./Expense_routes/admin_home');
 
-const detailRoutes= require('/home/ec2-user/ExpenseReport-Application/Expense_routes/expense_route');
+const detailRoutes= require('./Expense_routes/expense_route');
 
 const purchaseRoutes= require('./Expense_routes/purchase_routes');
 
