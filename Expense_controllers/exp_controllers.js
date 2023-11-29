@@ -28,10 +28,10 @@ exports.getIndex=(req, res, next) => {
       const expenseData = JSON.stringify(expense);
       
       console.log(expenseData);
-      res.render('expense/details', {
+      res.render('Expense/details', {
         expense: expenseData,
         pageTitle: 'All Products',
-        path: '/expense/details',
+        path: '/Expense/details',
         ansValue:ansValue
       });
     })
