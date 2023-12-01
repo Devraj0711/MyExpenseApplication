@@ -66,6 +66,12 @@ app.use(resetPasswordRoutes);
 
 app.use(errorController.get404);  
 
+app.use((req, res) => {
+    console.log('url', req.url);
+    res.sendFile(path.join(__dirname, `views/${req.url}`))
+
+})
+
 
 
 //use of sequelize to carry on all the DB commands
