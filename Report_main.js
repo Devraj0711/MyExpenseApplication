@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 
 const cors = require('cors');
 
-const errorController = require('./expense_controllers/error');
+const errorController = require('./Expense_controllers/error');
 
 const sequelize =require('./util/database');
 
@@ -24,15 +24,15 @@ app.set('views', 'views');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')))
 
-const adminRoutes = require('./expense_routes/admin_home');
+const adminRoutes = require('./Expense_routes/admin_home');
 
-const detailRoutes= require('./expense_routes/expense_route');
+const detailRoutes= require('./Expense_routes/expense_route');
 
-const purchaseRoutes= require('./expense_routes/purchase_routes');
+const purchaseRoutes= require('./Expense_routes/purchase_routes');
 
-const premiumRoutes= require('./expense_routes/premium_route');
+const premiumRoutes= require('./Expense_routes/premium_route');
 
-const resetPasswordRoutes = require('./expense_routes/resetPassword_routes')
+const resetPasswordRoutes = require('./Expense_routes/resetPassword_routes')
 
 const Home_page= require('./models/db_model'); // expenseReports
 const Exp_page= require('./models/ExpenseDB'); //details

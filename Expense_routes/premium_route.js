@@ -4,7 +4,7 @@ const jwt=require('jsonwebtoken');
 
 const express = require('express');
 
-const premiumFeatureController= require('../expense_controllers/premiumFeatures_controller');
+const premiumFeatureController= require('../Expense_controllers/premiumFeatures_controller');
 
 const userauthentication= require('../middleware/auth');
 

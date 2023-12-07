@@ -7,7 +7,7 @@ const bcrypt= require('bcrypt');
 
 const jwt= require('jsonwebtoken');
 
-const userController=  require('../expense_controllers/admin_controllers');
+const userController=  require('../Expense_controllers/admin_controllers');
 
 const Order =require('../models/order');
 const sequelize = require('../util/database');
