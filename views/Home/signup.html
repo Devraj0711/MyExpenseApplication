@@ -108,7 +108,7 @@
             </fieldset>
         </form>
 
-        <div class="signin-link" onclick="window.location.href='http://localhost:2000/Home/signin'">Already a User? Sign
+        <div class="signin-link" onclick="window.location.href='http://16.171.29.86:2000/Home/signin'">Already a User? Sign
             In</div>
     </main>
      <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.4.1/axios.min.js" integrity="sha512-Fh/JL4KFgbH0OFN4EMEOvk90MTCjVuTVGFRDc+Kh5PyUFOzSzn/KA6PTOSNywfm5Ruppr40Uj09oGuj5tn6jiQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -135,12 +135,12 @@
                     Password: e.target.Password.value
                 }
                 console.log(loginDetails);
-               axios.post('http://localhost:2000/Home/signup', loginDetails)
+               axios.post('http://16.171.29.86:2000/Home/signup', loginDetails)
                .then(response => {
                 if(response.status === 200)
                 {
                     alert(response.data.message);
-                    window.location.href = 'http://localhost:2000/Home/signin';  // this code redirects to the signin page after alert box display
+                    window.location.href = 'http://16.171.29.86:2000/Home/signin';  // this code redirects to the signin page after alert box display
                 }
                 
                })

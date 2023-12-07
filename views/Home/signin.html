@@ -135,13 +135,13 @@
                     Password: e.target.Password.value
                 }
                 console.log(loginDetails);
-               axios.post('http://localhost:2000/Home/signin', loginDetails)
+               axios.post('http://16.171.29.86:2000/Home/signin', loginDetails)
                .then(response => {
                 if(response.status === 200)
                 {
                     localStorage.setItem('token', response.data.token )
                     alert(response.data.message)
-                    window.location.href = 'http://localhost:2000/Expense/details';
+                    window.location.href = 'http://16.171.29.86:2000/Expense/details';
                 }
                 
                })
@@ -155,7 +155,7 @@
             };
             
             function forgotpassword() {
-                window.location.href = "http://localhost:2000/password/forgetPassword"
+                window.location.href = "http://16.171.29.86:2000/password/forgetPassword"
             } //end of function
 
      </script>
