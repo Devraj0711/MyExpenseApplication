@@ -2,7 +2,7 @@ const path = require('path');
 
 const express = require('express');
 
-const adminController = require('../Expense_controllers/resetPassword_controller');
+const adminController = require('../expense_controllers/resetPassword_controller');
 
 const router = express.Router();
 

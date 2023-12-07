@@ -4,7 +4,7 @@ const jwt=require('jsonwebtoken');
 
 const express = require('express');
 
-const purchaseController = require('../Expense_controllers/purchase_controller');
+const purchaseController = require('../expense_controllers/purchase_controller');
 
 const userauthentication= require('../middleware/auth');
 

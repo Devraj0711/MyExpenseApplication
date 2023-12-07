@@ -2,7 +2,7 @@ const Home_page = require('../models/db_model'); // Adjust the path based on you
 const Exp_page = require('../models/ExpenseDB'); // Adjust the path based on your project structure
 const StoreURL= require('../models/StoreURL');
 
-const token_ans= require('../Expense_controllers/admin_controllers'); // for export ans
+const token_ans= require('./admin_controllers'); // for export ans
 
 const sequelize = require('../util/database');
 
@@ -95,6 +95,17 @@ exports.postIndex = async (req, res, next) => {
     return res.status(500).json({ error: 'Internal Server Error', success: false });
   }
 };
+
+exports.deleteexpense = (req, res) => {
+  const expenseid = req.params.expenseid;
+  console.log("show deleted id --->", expenseid);
+  Exp_page.destroy({where: { id: expenseid }}).then(() => {
+      return res.status(204).json({ success: true, message: "Deleted Successfuly"})
+  }).catch(err => {
+      console.log(err);
+      return res.status(403).json({ success: true, message: "Failed"})
+  })
+}
 
 function uploadToS3(data, filename){
   const BUCKET_NAME = 'expensetracker201077';

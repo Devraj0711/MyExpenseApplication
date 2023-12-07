@@ -216,7 +216,28 @@
                     
                     // document.body.innerHTML += 'You are a Premium Member';
                 }        
-            
+                
+                function deleteExpense(e, expenseid) {
+                    const token = localStorage.getItem('token');
+                    axios.delete(`http://localhost:2000/deleteexpense/${expenseid}`, { headers: {"Authorization" : token} }).then((response) => {
+                        if(response.status === 204){
+                            removeExpensefromUI(expenseid);
+                        }
+                        else {
+                            throw new Error('Failed to delete');
+                        }
+                    }).catch((err => {
+                        showError(err);
+                    }))
+                }
+
+               
+
+                function removeExpensefromUI(expenseid){
+                    const expenseElemId = `expense-${expenseid}`;
+                    document.getElementById(expenseElemId).remove();
+                }
+
             
 
 
@@ -255,14 +276,20 @@
                     {
                 
                         const childElement1 = document.createElement('li');
+                        
                         childElement1.textContent = expense.Amount + ' - ' + expense.description + ' - ' + expense.Category;
-                        const deleteButton = document.createElement('button');
-                        deleteButton.className = 'btn btn-danger btn-sm float-right delete';
-                        deleteButton.appendChild(document.createTextNode('Delete Expense'));
-                        const editButton = document.createElement('button');
-                        editButton.className = 'btn btn-primary btn-sm float-right edit';
-                        editButton.appendChild(document.createTextNode('Edit'));
-                        childElement1.appendChild(editButton);
+                        const expenseElemId = `expense-${expense.id}`;
+                    const deleteButton = document.createElement('button');
+                    deleteButton.className = 'btn btn-danger btn-sm float-right delete';
+                    deleteButton.id= `expense-${expense.id}`;
+                    deleteButton.appendChild(document.createTextNode('Delete Expense'));
+                    deleteButton.onclick = function(event) {
+                        deleteExpense(event, expense.id);
+                    };
+                    
+                        
+                        
+                      
                         childElement1.appendChild(deleteButton);
                         listOfExpenses.appendChild(childElement1);
                     }
@@ -316,19 +343,20 @@
                     console.log('Received data from server:', myobj);
                     const childElement = document.createElement('li');
                     childElement.textContent = myobj.Amount + ' - ' + myobj.description + ' - ' + myobj.Category;
+                    const expenseElemId = `expense-${myobj.id}`;
                     const deleteButton = document.createElement('button');
-                    deleteButton.className = 'btn btn-danger btn-sm float-right delete';
+                    childElement.className = 'btn btn-danger btn-sm float-right delete';
+                    deleteButton.id= `expense-${myobj.id}`;
                     deleteButton.appendChild(document.createTextNode('Delete Expense'));
-                    const editButton = document.createElement('button');
-                    editButton.className = 'btn btn-primary btn-sm float-right edit';
-                    editButton.appendChild(document.createTextNode('Edit'));
-                    childElement.appendChild(editButton);
+                    deleteButton.onclick = function(event) {
+                        deleteExpense(event, myobj.id);
+                    };
                     childElement.appendChild(deleteButton);
                     listOfExpenses.appendChild(childElement);
-
+                    }
                 
-                }
-
+                
+               
 
 
                 // function used to show error on the screen
