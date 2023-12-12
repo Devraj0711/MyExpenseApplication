@@ -95,7 +95,7 @@
                 console.log(config);
 
                 //post call to the server returning 200 success
-                axios.post('http://16.171.29.86:2000/Expense/details', expenseDetails, config)
+                axios.post('http://localhost:2000/Expense/details', expenseDetails, config)
                     .then(response => {
                         if (response.data.success) {
                             console.log(response.data.expense);
@@ -160,7 +160,7 @@
                 document.getElementById('rzp-button1').onclick = async function (e) {
                     const token = localStorage.getItem('token');
                     try {
-                        const response = await axios.get('http://16.171.29.86:2000/premiummembership', {
+                        const response = await axios.get('http://localhost:2000/premiummembership', {
                             headers: { "Authorization": token }
                         });
                         
@@ -169,7 +169,7 @@
                             "order_id": response.data.order.id,
                             "handler": async function (response) {
                                 try {
-                                    const paymentResponse = await axios.post('http://16.171.29.86:2000/updatetransactionstatus', {
+                                    const paymentResponse = await axios.post('http://localhost:2000/updatetransactionstatus', {
                                     order_id: options.order_id,
                                     payment_id: response.razorpay_payment_id,
                                 }, {
@@ -210,7 +210,7 @@
                 // {
                     
                 //     const token= localStorage.getItem('token')
-                //     const response = await axios.get ('http://16.171.29.86:2000/premiummembership', {headers: {"Authorization": token}});
+                //     const response = await axios.get ('http://localhost:2000/premiummembership', {headers: {"Authorization": token}});
                 //     console.log(response);
                 //     var options= 
                 //     {
@@ -218,7 +218,7 @@
                 //         "order_id": response.data.order.id, //for one time payement
                 //         "handler" : async function(response)
                 //         {
-                //             await axios.post('http://16.171.29.86:2000/updatetransactionstatus', {
+                //             await axios.post('http://localhost:2000/updatetransactionstatus', {
                 //                 order_id: options.order_id,
                 //                 payment_id: response.razorpay_payment_id,
                 //             }, {headers: {"Authorization": token}})

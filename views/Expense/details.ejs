@@ -151,7 +151,7 @@
                     inputElement.onclick = async () => {
                     try {
                         const token = localStorage.getItem('token');
-                        const response = await axios.get('http://16.171.29.86:2000/premium/showleaderboard', {
+                        const response = await axios.get('http://localhost:2000/premium/showleaderboard', {
                         headers: { "Authorization": token }
                     });
 
@@ -186,7 +186,7 @@
 
             function download(){
                 const token = localStorage.getItem('token');
-                axios.get('http://16.171.29.86:2000/download', { headers: {"Authorization" : token} })
+                axios.get('http://localhost:2000/download', { headers: {"Authorization" : token} })
                 .then((response) => {
                 if(response.status === 200){
                     //the bcakend is essentially sending a download link
@@ -219,7 +219,7 @@
                 
                 function deleteExpense(e, expenseid) {
                     const token = localStorage.getItem('token');
-                    axios.delete(`http://16.171.29.86:2000/deleteexpense/${expenseid}`, { headers: {"Authorization" : token} }).then((response) => {
+                    axios.delete(`http://localhost:2000/deleteexpense/${expenseid}`, { headers: {"Authorization" : token} }).then((response) => {
                         if(response.status === 204){
                             removeExpensefromUI(expenseid);
                         }
@@ -318,7 +318,7 @@
                     console.log(config);
 
                     //post call to the server returning 200 success
-                    axios.post('http://16.171.29.86:2000/Expense/details', expenseDetails, config)
+                    axios.post('http://localhost:2000/Expense/details', expenseDetails, config)
                         .then(response => {
                             if (response.data.success) 
                             {
@@ -399,7 +399,7 @@
                         const token = localStorage.getItem('token');
                     
                         try {
-                            const response = await axios.get('http://16.171.29.86:2000/premiummembership', {
+                            const response = await axios.get('http://localhost:2000/premiummembership', {
                                 headers: { "Authorization": token }
                             
                             });
@@ -409,7 +409,7 @@
                             "order_id": response.data.order.id,
                             "handler": async function (response) {
                                 try {
-                                    const paymentResponse = await axios.post('http://16.171.29.86:2000/updatetransactionstatus', {
+                                    const paymentResponse = await axios.post('http://localhost:2000/updatetransactionstatus', {
                                     order_id: options.order_id,
                                     payment_id: response.razorpay_payment_id,
                                 }, {
